@@ -35,9 +35,6 @@ We welcome contributions! To contribute:
 3. Commit your changes and push to GitHub.
 4. Open a Pull Request.
 
-## License
-This project is licensed under the **MIT License**. See `LICENSE` for details.
-
 ## Contact
 For questions or collaboration, reach out via:
 - GitHub Issues
