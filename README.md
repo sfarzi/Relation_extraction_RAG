@@ -16,10 +16,6 @@ To get started, clone the repository and install the required dependencies:
 git clone https://github.com/sfarzi/Relation_extraction_RAG.git
 ```
 
-## Usage
-Run the following command to process clinical documents and extract relations:
-
-
 ## Dataset
 [BioCreative-V-CDR-Corpus](https://github.com/JHnlp/BioCreative-V-CDR-Corpus)
 
