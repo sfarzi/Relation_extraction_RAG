@@ -90,8 +90,3 @@ Diagram for NER model:
 - **MedGemma shows marginal improvements**, while **LLaMA performance decreases** under enriched input.  
 - **HYDE is cost-efficient** but doesn’t improve accuracy compared to direct prompting.  
 - **Entity-to-UMLS mapping is a promising direction** for biomedical relation extraction.  
-
----
-
-## 📂 Repository Structure  
-
