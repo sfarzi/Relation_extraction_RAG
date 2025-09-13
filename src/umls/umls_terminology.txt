@@ -1,0 +1,22 @@
+1) what is sourceDescriptor?
+    . any vocabularies (like MeSH or MedDRA) organize their content in layers.
+    . A descriptor is like the main heading or category that groups together related terms (atoms) and synonyms.
+    . Think of it as the "folder name" under which several terms (the actual strings) live.
+    . Example (MeSH)
+        Descriptor (main heading): D012140 → Tuberculosis
+            Under this descriptor, you’ll find:
+            "TB"
+            "Tuberculoses"
+            "Koch's Disease"
+            etc.
+    . All those terms are linked atoms, but the descriptor is the central ID for the concept in that vocabulary.
+
+
+2) what is SourceConcept?
+    . A concept identifier in some source vocabularies.
+    . Some vocabularies (like SNOMED CT) don’t use descriptors—they use concepts instead.
+    . A concept is a meaning unit (like Myocardial Infarction), which may have different codes or term types.
+    . Example (SNOMED CT):
+    . Concept ID: 22298006 → Myocardial Infarction
+    . Linked terms: “Heart Attack”, “MI”, “Myocardial Infarction”
+    . 👉 SourceConcept = the source’s own concept-level ID.

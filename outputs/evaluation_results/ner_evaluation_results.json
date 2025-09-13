@@ -1,0 +1,72 @@
+[
+    {
+        "time": "2025-09-11_15-15-47",
+        "config": "threshold=0.15 | stop_words=True | Combined_tokens=False | corpus_with_synonyms: True",
+        "micro": {
+            "precision": 0.65,
+            "recall": 0.69,
+            "f1": 0.67
+        },
+        "macro": {
+            "precision": 0.61,
+            "recall": 0.67,
+            "f1": 0.62
+        }
+    },
+    {
+        "time": "2025-09-11_16-00-51",
+        "config": "threshold=0.05 | stop_words=True | Combined_tokens=False | corpus_with_synonyms: False",
+        "micro": {
+            "precision": 0.81,
+            "recall": 0.51,
+            "f1": 0.62
+        },
+        "macro": {
+            "precision": 0.48,
+            "recall": 0.48,
+            "f1": 0.47
+        }
+    },
+    {
+        "time": "2025-09-11_16-16-38",
+        "config": "threshold=0.05 | stop_words=True | Combined_tokens=False | corpus_with_synonyms: True",
+        "micro": {
+            "precision": 0.75,
+            "recall": 0.61,
+            "f1": 0.68
+        },
+        "macro": {
+            "precision": 0.56,
+            "recall": 0.59,
+            "f1": 0.56
+        }
+    },
+    {
+        "time": "2025-09-11_16-48-16",
+        "config": "threshold=0.02 | stop_words=True | Combined_tokens=False | corpus_with_synonyms: False",
+        "micro": {
+            "precision": 0.83,
+            "recall": 0.47,
+            "f1": 0.6
+        },
+        "macro": {
+            "precision": 0.46,
+            "recall": 0.45,
+            "f1": 0.44
+        }
+    },
+    {
+        "time": "2025-09-11_17-07-39",
+        "config": "threshold=0.05 | stop_words=True | Combined_tokens=True | combine_length=5 | corpus_with_synonyms: True",
+        "micro": {
+            "precision": 0.75,
+            "recall": 0.79,
+            "f1": 0.77
+        },
+        "macro": {
+            "precision": 0.76,
+            "recall": 0.81,
+            "f1": 0.76
+        }
+    }
+]

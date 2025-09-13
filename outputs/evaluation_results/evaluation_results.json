@@ -1,0 +1,380 @@
+{
+    "update_time": "2025-09-13_13-54-46",
+    "Phase1": {
+        "method": "PromptEngineering",
+        "BC5CDR": {
+            "meta-llama": [
+                {
+                    "model_id": "Llama-3.2-3B-Instruct",
+                    "split": "test",
+                    "temperature": 0.7,
+                    "system_prompt": "You are an information extraction engine for the BC5CDR task. Your job is to extract **document-level chemical-induced disease (CID)** relations from biomedical titles and abstracts.\n\n## Task Definition\nA CID relation exists when:\n- A chemical is explicitly or implicitly stated to cause, induce, trigger, or increase risk of a disease/condition.\n- The evidence may span across title and abstract together.\n\n## Input Format\n- You will receive plain text per record in this form:\n  `This is title {title} and this is abstract {abstract}`\n- The title and abstract may contain multiple sentences, abbreviations, and co-mentions.\n\n## Output Format\n- Output all distinct CID relations in row:\n  disease-entity, chemical-entity\\ndisease-entity, chemical-entity\n- Use **exact surface text** from the input for each entity (keep original capitalization and wording).\n- Separate each relation with a \\n and no extra spaces.\n- If no CID is present, return: None\n- Do not include any text outside of the tuples.\n\n## Decision Rules (STRICT)\n1. **Positive CID** → Output if:\n  - Explicit causal link: “X causes/induces/triggers/leads to Y”.\n  - Association implying causation: “X exposure associated with increased risk of Y”.\n  - Case reports or trials where Y occurs after X with plausible causality.\n  - Mechanistic evidence clearly leading to a disease outcome.\n2. **Do NOT output** if:\n  - Chemical and disease are merely co-mentioned with no causal link.\n  - The chemical is a treatment for the disease without causing it.\n  - Only mechanisms or pathways are mentioned with no disease.\n  - Statement is purely negated: “No evidence that X causes Y”.\n3. **Speculative handling**:\n  - Include speculative CID only if text implies a plausible link (e.g., “may induce Y”).\n  - Omit if purely hypothetical with no supporting evidence.\n4. **Abbreviations**:\n  - If an entity is introduced with parentheses (e.g., “acetaminophen (APAP)”), choose the **long form** for output unless the abbreviation is the main term in causal evidence.\n5. **Uniqueness**:\n  - Do not repeat identical `(disease, chemical)` tuples.\n  - Order inside tuple is always `(disease, chemical)`.\n\n## Quality Constraints\n- Each entity in the output must appear in the input text.\n- Do not invent entities not in the input.\n- Always match spelling, spacing, and punctuation exactly as in the input.\n- No extra commentary, explanation, or JSON — only the tuple string.\n\n## Few-Shot Examples\n\n### Example 1 — Positive CID\nInput:\nThis is title Acetaminophen overdose and acute liver failure and this is abstract Overdose of acetaminophen (APAP) is the leading cause of acute liver failure in many countries. Patients also developed hepatic injury after APAP ingestion.\nOutput:\nacute liver failure, acetaminophen\nhepatic injury, APAP\n\n### Example 2 — No CID\nInput:\nThis is title Metformin therapy in type 2 diabetes and this is abstract Metformin improves glycemic control in type 2 diabetes patients. No adverse events were observed.\nOutput:\n()\n\n### Example 3 — Speculative CID\nInput:\nThis is title Possible link between pesticide exposure and Parkinson's disease and this is abstract Some cohort data suggest chronic exposure to paraquat may increase risk of Parkinson's disease, but evidence is inconsistent.\nOutput:\nParkinson's disease, paraquat\n\n## Final Behavior\n- Produce exactly one output string per input.\n- If uncertain and no evidence meets rules, return `()`.\n",
+                    "time": "2025-08-25_03-13-22",
+                    "metrics": {
+                        "micro": {
+                            "micro_precision": 0.163,
+                            "micro_recall": 0.177,
+                            "micro_f1": 0.17
+                        },
+                        "macro": {
+                            "macro_precision": 0.211,
+                            "macro_recall": 0.214,
+                            "macro_f1": 0.195
+                        }
+                    }
+                },
+                {
+                    "model_id": "Llama-3.2-3B-Instruct",
+                    "split": "test",
+                    "temperature": 0.7,
+                    "system_prompt": "You are an information extraction system for the BC5CDR task.\n\nGoal\nExtract ONLY chemical-induced disease (CID) relations from the provided Title and Abstract. Relations may not be clearly stated in the text, so you must carefully digest text.\n\nOutput rules (must follow exactly)\n1) Output ONLY relations, nothing else (no headers, counts, explanations).\n2) One relation per line, formatted as:\n  disease entity, chemical entity\n3) Use entity surface forms exactly as they appear in the input text (verbatim, including capitalization and hyphenation).\n4) Each relation must be document-level (can be across sentences) but must be supported by the text.\n5) Do not deduplicate to synonyms—use the exact span(s) found in the text. If multiple distinct disease or chemical spans are linked, output each distinct pair once.\n6) If there are NO valid CID relations, output nothing (empty output).\n",
+                    "time": "2025-09-06_14-12-18",
+                    "metrics": {
+                        "micro": {
+                            "micro_precision": 0.045,
+                            "micro_recall": 0.1,
+                            "micro_f1": 0.062
+                        },
+                        "macro": {
+                            "macro_precision": 0.073,
+                            "macro_recall": 0.12,
+                            "macro_f1": 0.08
+                        }
+                    }
+                }
+            ],
+            "google": [
+                {
+                    "model_id": "medgemma-4b-it",
+                    "split": "test",
+                    "temperature": 0.7,
+                    "system_prompt": "You are an information extraction engine for the BC5CDR task. Your job is to extract **document-level chemical-induced disease (CID)** relations from biomedical titles and abstracts.\n\n## Task Definition\nA CID relation exists when:\n- A chemical is explicitly or implicitly stated to cause, induce, trigger, or increase risk of a disease/condition.\n- The evidence may span across title and abstract together.\n\n## Input Format\n- You will receive plain text per record in this form:\n  `This is title {title} and this is abstract {abstract}`\n- The title and abstract may contain multiple sentences, abbreviations, and co-mentions.\n\n## Output Format\n- Output all distinct CID relations in row:\n  disease-entity, chemical-entity\\ndisease-entity, chemical-entity\n- Use **exact surface text** from the input for each entity (keep original capitalization and wording).\n- Separate each relation with a \\n and no extra spaces.\n- If no CID is present, return: None\n- Do not include any text outside of the tuples.\n\n## Decision Rules (STRICT)\n1. **Positive CID** → Output if:\n  - Explicit causal link: “X causes/induces/triggers/leads to Y”.\n  - Association implying causation: “X exposure associated with increased risk of Y”.\n  - Case reports or trials where Y occurs after X with plausible causality.\n  - Mechanistic evidence clearly leading to a disease outcome.\n2. **Do NOT output** if:\n  - Chemical and disease are merely co-mentioned with no causal link.\n  - The chemical is a treatment for the disease without causing it.\n  - Only mechanisms or pathways are mentioned with no disease.\n  - Statement is purely negated: “No evidence that X causes Y”.\n3. **Speculative handling**:\n  - Include speculative CID only if text implies a plausible link (e.g., “may induce Y”).\n  - Omit if purely hypothetical with no supporting evidence.\n4. **Abbreviations**:\n  - If an entity is introduced with parentheses (e.g., “acetaminophen (APAP)”), choose the **long form** for output unless the abbreviation is the main term in causal evidence.\n5. **Uniqueness**:\n  - Do not repeat identical `(disease, chemical)` tuples.\n  - Order inside tuple is always `(disease, chemical)`.\n\n## Quality Constraints\n- Each entity in the output must appear in the input text.\n- Do not invent entities not in the input.\n- Always match spelling, spacing, and punctuation exactly as in the input.\n- No extra commentary, explanation, or JSON — only the tuple string.\n\n## Few-Shot Examples\n\n### Example 1 — Positive CID\nInput:\nThis is title Acetaminophen overdose and acute liver failure and this is abstract Overdose of acetaminophen (APAP) is the leading cause of acute liver failure in many countries. Patients also developed hepatic injury after APAP ingestion.\nOutput:\nacute liver failure, acetaminophen\nhepatic injury, APAP\n\n### Example 2 — No CID\nInput:\nThis is title Metformin therapy in type 2 diabetes and this is abstract Metformin improves glycemic control in type 2 diabetes patients. No adverse events were observed.\nOutput:\n()\n\n### Example 3 — Speculative CID\nInput:\nThis is title Possible link between pesticide exposure and Parkinson's disease and this is abstract Some cohort data suggest chronic exposure to paraquat may increase risk of Parkinson's disease, but evidence is inconsistent.\nOutput:\nParkinson's disease, paraquat\n\n## Final Behavior\n- Produce exactly one output string per input.\n- If uncertain and no evidence meets rules, return `()`.\n",
+                    "time": "2025-08-29_16-54-31",
+                    "metrics": {
+                        "micro": {
+                            "micro_precision": 0.236,
+                            "micro_recall": 0.22,
+                            "micro_f1": 0.227
+                        },
+                        "macro": {
+                            "macro_precision": 0.278,
+                            "macro_recall": 0.272,
+                            "macro_f1": 0.255
+                        }
+                    }
+                },
+                {
+                    "model_id": "medgemma-4b-it",
+                    "split": "test",
+                    "temperature": 0.7,
+                    "system_prompt": "You are an information extraction system for the BC5CDR task.\n\nGoal\nExtract ONLY chemical-induced disease (CID) relations from the provided Title and Abstract. Relations may not be clearly stated in the text, so you must carefully digest text.\n\nOutput rules (must follow exactly)\n1) Output ONLY relations, nothing else (no headers, counts, explanations).\n2) One relation per line, formatted as:\n  disease entity, chemical entity\n3) Use entity surface forms exactly as they appear in the input text (verbatim, including capitalization and hyphenation).\n4) Each relation must be document-level (can be across sentences) but must be supported by the text.\n5) Do not deduplicate to synonyms—use the exact span(s) found in the text. If multiple distinct disease or chemical spans are linked, output each distinct pair once.\n6) If there are NO valid CID relations, output nothing (empty output).\n",
+                    "time": "2025-09-06_12-21-08",
+                    "metrics": {
+                        "micro": {
+                            "micro_precision": 0.345,
+                            "micro_recall": 0.425,
+                            "micro_f1": 0.381
+                        },
+                        "macro": {
+                            "macro_precision": 0.444,
+                            "macro_recall": 0.493,
+                            "macro_f1": 0.434
+                        }
+                    }
+                }
+            ],
+            "openai": [
+                {
+                    "model_id": "gpt-4.1-2025-04-14",
+                    "split": "test",
+                    "temperature": 0,
+                    "system_prompt": "You are an information extraction system for the BC5CDR task.\n\nGoal\nExtract ONLY chemical-induced disease (CID) relations from the provided Title and Abstract. Relations may not be clearly stated in the text, so you must carefully digest text.\n\nOutput rules (must follow exactly)\n1) Output ONLY relations, nothing else (no headers, counts, explanations).\n2) One relation per line, formatted as:\n  disease entity, chemical entity\n3) Use entity surface forms exactly as they appear in the input text (verbatim, including capitalization and hyphenation).\n4) Each relation must be document-level (can be across sentences) but must be supported by the text.\n5) Do not deduplicate to synonyms—use the exact span(s) found in the text. If multiple distinct disease or chemical spans are linked, output each distinct pair once.\n6) If there are NO valid CID relations, output nothing (empty output).\n",
+                    "time": "2025-09-06_10-27-28",
+                    "metrics": {
+                        "micro": {
+                            "micro_precision": 0.464,
+                            "micro_recall": 0.626,
+                            "micro_f1": 0.533
+                        },
+                        "macro": {
+                            "macro_precision": 0.565,
+                            "macro_recall": 0.71,
+                            "macro_f1": 0.586
+                        }
+                    }
+                }
+            ]
+        }
+    },
+    "Phase2": {
+        "method": "UMLS",
+        "BC5CDR": {
+            "openai": [
+                {
+                    "model_id": "gpt-4.1-2025-04-14",
+                    "split": "test",
+                    "temperature": 0.01,
+                    "system_prompt": "You are an information extraction system for the BC5CDR task.\n\nGoal\nExtract ONLY chemical-induced disease (CID) relations from the provided Title and Abstract. Relations may not be clearly stated in the text, so you must carefully digest text.\n\ninput\nYou will be given a title and an abstract, extract chemical-induced disease (CID) relations.\nAlso, you will be provided with additional information about title and abstract which may help you in extracting relations.\nThe additional information are:\n1) Possible medical terms that may appear in the text (these terms may also be synonyms of the exact terms in the text).\n2) Definitions of the possible medical terms.\n3) The type of each possible medical term.\n4) Synonyms for each medical term.\n\n\nOutput rules (must follow exactly)\n1) Output ONLY relations, nothing else (no headers, counts, explanations).\n2) One relation per line, formatted as:\n  disease entity1, chemical entity1\n  disease entity2, chemical entity2\n3) Use entity surface forms exactly as they appear in the input text (verbatim, including capitalization and hyphenation).\n4) Each relation must be document-level (can be across sentences) but must be supported by the text.\n5) Do not deduplicate to synonyms—use the exact span(s) found in the text. If multiple distinct disease or chemical spans are linked, output each distinct pair once.\n6) If there are NO valid CID relations, output nothing (empty output).\n7) Use the additional terms (including definitions, types, and synonyms) only to assist in reasoning and inferring possible relations. However, when writing the final relation set, use only the exact entity surface forms that appear in the text.\n",
+                    "time": "2025-09-12_14-10-30",
+                    "detail": "with synonyms",
+                    "metrics": {
+                        "micro": {
+                            "micro_precision": 0.559,
+                            "micro_recall": 0.672,
+                            "micro_f1": 0.61
+                        },
+                        "macro": {
+                            "macro_precision": 0.645,
+                            "macro_recall": 0.733,
+                            "macro_f1": 0.648
+                        }
+                    }
+                },
+                {
+                    "model_id": "gpt-4.1-2025-04-14",
+                    "split": "test",
+                    "temperature": 0.01,
+                    "system_prompt": "You are an information extraction system for the BC5CDR task.\n\nGoal\nExtract ONLY chemical-induced disease (CID) relations from the provided Title and Abstract. Relations may not be clearly stated in the text, so you must carefully digest text.\n\ninput\nYou will be given a title and an abstract, extract chemical-induced disease (CID) relations.\nAlso, you will be provided with additional information about title and abstract which may help you in extracting relations.\nThe additional information are:\n1) Possible medical terms that may appear in the text (these terms may also be synonyms of the exact terms in the text).\n2) Definitions of the possible medical terms.\n3) The type of each possible medical term.\n4) Synonyms for each medical term.\n\n\nOutput rules (must follow exactly)\n1) Output ONLY relations, nothing else (no headers, counts, explanations).\n2) One relation per line, formatted as:\n  disease entity1, chemical entity1\n  disease entity2, chemical entity2\n3) Use entity surface forms exactly as they appear in the input text (verbatim, including capitalization and hyphenation).\n4) Each relation must be document-level (can be across sentences) but must be supported by the text.\n5) Do not deduplicate to synonyms—use the exact span(s) found in the text. If multiple distinct disease or chemical spans are linked, output each distinct pair once.\n6) If there are NO valid CID relations, output nothing (empty output).\n7) Use the additional terms (including definitions, types, and synonyms) only to assist in reasoning and inferring possible relations. However, when writing the final relation set, use only the exact entity surface forms that appear in the text.\n",
+                    "time": "2025-09-12_15-10-46",
+                    "detail": "without synonyms",
+                    "metrics": {
+                        "micro": {
+                            "micro_precision": 0.551,
+                            "micro_recall": 0.664,
+                            "micro_f1": 0.602
+                        },
+                        "macro": {
+                            "macro_precision": 0.629,
+                            "macro_recall": 0.715,
+                            "macro_f1": 0.633
+                        }
+                    }
+                }
+            ],
+            "google": [
+                {
+                    "model_id": "medgemma-4b-it",
+                    "split": "test",
+                    "temperature": 0.01,
+                    "system_prompt": "Task: Extract disease–chemical relations from biomedical text.\n\nInstructions:\n- Only print the relations. Do not include explanations, labels, or any extra text.  \n- Use the provided title, abstract, and entity type info.  \n- Each relation must be formatted as:\n  <disease>, <chemical>\n- Disease must always come first.  \n- Each relation goes on a new line.  \n- Entities must appear in plain text exactly as in the abstract.  \n- Only include relations explicitly supported by the text.  \n\nInput:\nTitle: Famotidine-associated delirium. A series of six cases.\nAbstract: Famotidine is a histamine H2-receptor antagonist used in inpatient settings for prevention of stress ulcers and is showing increasing popularity because of its low cost. Although all of the currently available H2-receptor antagonists have shown the propensity to cause delirium, only two previously reported cases have been associated with famotidine. The authors report on six cases of famotidine-associated delirium in hospitalized patients who cleared completely upon removal of famotidine. The pharmacokinetics of famotidine are reviewed, with no change in its metabolism in the elderly population seen. The implications of using famotidine in elderly persons are discussed.\n\nEntity Types:\n- famotidine → Organic Chemical, Pharmacologic Substance\n- ulcer → Pathologic Function\n- histamine → Organic Chemical, Biologically Active Substance\n- delirium → Mental or Behavioral Dysfunction\n\nOutput:\ndelirium, famotidine",
+                    "time": "2025-09-12_16-54-42",
+                    "metrics": {
+                        "micro": {
+                            "micro_precision": 0.326,
+                            "micro_recall": 0.324,
+                            "micro_f1": 0.325
+                        },
+                        "macro": {
+                            "macro_precision": 0.325,
+                            "macro_recall": 0.417,
+                            "macro_f1": 0.34
+                        }
+                    }
+                },
+                {
+                    "model_id": "medgemma-4b-it",
+                    "split": "test",
+                    "temperature": 0.7,
+                    "system_prompt": "Task: Extract disease–chemical relations from biomedical text.\n\nInstructions:\n- Only print the relations. Do not include explanations, labels, or any extra text.  \n- Use the provided title, abstract, and entity type info.  \n- Each relation must be formatted as:\n  <disease>, <chemical>\n- Disease must always come first.  \n- Each relation goes on a new line.  \n- Entities must appear in plain text exactly as in the abstract.  \n- Only include relations explicitly supported by the text.  \n\nInput:\nTitle: Famotidine-associated delirium. A series of six cases.\nAbstract: Famotidine is a histamine H2-receptor antagonist used in inpatient settings for prevention of stress ulcers and is showing increasing popularity because of its low cost. Although all of the currently available H2-receptor antagonists have shown the propensity to cause delirium, only two previously reported cases have been associated with famotidine. The authors report on six cases of famotidine-associated delirium in hospitalized patients who cleared completely upon removal of famotidine. The pharmacokinetics of famotidine are reviewed, with no change in its metabolism in the elderly population seen. The implications of using famotidine in elderly persons are discussed.\n\nEntity Types:\n- famotidine → Organic Chemical, Pharmacologic Substance\n- ulcer → Pathologic Function\n- histamine → Organic Chemical, Biologically Active Substance\n- delirium → Mental or Behavioral Dysfunction\n\nOutput:\ndelirium, famotidine",
+                    "time": "2025-09-12_17-52-16",
+                    "metrics": {
+                        "micro": {
+                            "micro_precision": 0.321,
+                            "micro_recall": 0.319,
+                            "micro_f1": 0.32
+                        },
+                        "macro": {
+                            "macro_precision": 0.324,
+                            "macro_recall": 0.402,
+                            "macro_f1": 0.335
+                        }
+                    }
+                },
+                {
+                    "model_id": "medgemma-4b-it",
+                    "split": "test",
+                    "temperature": 0.7,
+                    "system_prompt": "You are an information extraction system for the BC5CDR task.\n\nGoal\nExtract ONLY chemical-induced disease (CID) relations from the provided Title and Abstract. Relations may not be clearly stated in the text, so you must carefully digest text.\n\nOutput rules (must follow exactly)\n1) Output ONLY relations, nothing else (no headers, counts, explanations).\n2) One relation per line, formatted as:\n  disease entity, chemical entity\n3) Use entity surface forms exactly as they appear in the input text (verbatim, including capitalization and hyphenation).\n4) Each relation must be document-level (can be across sentences) but must be supported by the text.\n5) Do not deduplicate to synonyms—use the exact span(s) found in the text. If multiple distinct disease or chemical spans are linked, output each distinct pair once.\n6) If there are NO valid CID relations, output nothing (empty output).\n",
+                    "time": "2025-09-12_18-40-34",
+                    "metrics": {
+                        "micro": {
+                            "micro_precision": 0.326,
+                            "micro_recall": 0.412,
+                            "micro_f1": 0.364
+                        },
+                        "macro": {
+                            "macro_precision": 0.42,
+                            "macro_recall": 0.496,
+                            "macro_f1": 0.423
+                        }
+                    }
+                },
+                {
+                    "model_id": "medgemma-4b-it",
+                    "split": "test",
+                    "temperature": 0.7,
+                    "system_prompt": "You are an information extraction system for the BC5CDR task.\n\nGoal\nExtract ONLY chemical-induced disease (CID) relations from the provided Title and Abstract. Relations may not be clearly stated in the text, so you must carefully digest text.\n\nOutput rules (must follow exactly)\n1) Output ONLY relations, nothing else (no headers, counts, explanations).\n2) One relation per line, formatted as:\n  disease entity, chemical entity\n3) Use entity surface forms exactly as they appear in the input text (verbatim, including capitalization and hyphenation).\n4) Each relation must be document-level (can be across sentences) but must be supported by the text.\n5) Do not deduplicate to synonyms—use the exact span(s) found in the text. If multiple distinct disease or chemical spans are linked, output each distinct pair once.\n6) If there are NO valid CID relations, output nothing (empty output).\n",
+                    "time": "2025-09-12_20-07-20",
+                    "metrics": {
+                        "micro": {
+                            "micro_precision": 0.314,
+                            "micro_recall": 0.419,
+                            "micro_f1": 0.359
+                        },
+                        "macro": {
+                            "macro_precision": 0.42,
+                            "macro_recall": 0.507,
+                            "macro_f1": 0.438
+                        }
+                    }
+                }
+            ],
+            "meta-llama": [
+                {
+                    "model_id": "Llama-3.2-3B-Instruct",
+                    "split": "test",
+                    "temperature": 0.7,
+                    "system_prompt": "You are an information extraction system for the BC5CDR task.\n\nGoal\nExtract ONLY chemical-induced disease (CID) relations from the provided Title and Abstract. Relations may not be clearly stated in the text, so you must carefully digest text.\n\nOutput rules (must follow exactly)\n1) Output ONLY relations, nothing else (no headers, counts, explanations).\n2) One relation per line, formatted as:\n  disease entity, chemical entity\n3) Use entity surface forms exactly as they appear in the input text (verbatim, including capitalization and hyphenation).\n4) Each relation must be document-level (can be across sentences) but must be supported by the text.\n5) Do not deduplicate to synonyms—use the exact span(s) found in the text. If multiple distinct disease or chemical spans are linked, output each distinct pair once.\n6) If there are NO valid CID relations, output nothing (empty output).\n",
+                    "time": "2025-09-12_23-58-03",
+                    "metrics": {
+                        "micro": {
+                            "micro_precision": 0.069,
+                            "micro_recall": 0.174,
+                            "micro_f1": 0.099
+                        },
+                        "macro": {
+                            "macro_precision": 0.089,
+                            "macro_recall": 0.197,
+                            "macro_f1": 0.113
+                        }
+                    }
+                },
+                {
+                    "model_id": "Llama-3.2-3B-Instruct",
+                    "split": "test",
+                    "temperature": 0.7,
+                    "system_prompt": "You are an information extraction system for the BC5CDR task.\n\nGoal\nExtract ONLY chemical-induced disease (CID) relations from the provided Title and Abstract. Relations may not be clearly stated in the text, so you must carefully digest text.\n\nOutput rules (must follow exactly)\n1) Output ONLY relations, nothing else (no headers, counts, explanations).\n2) One relation per line, formatted as:\n  disease entity, chemical entity\n3) Use entity surface forms exactly as they appear in the input text (verbatim, including capitalization and hyphenation).\n4) Each relation must be document-level (can be across sentences) but must be supported by the text.\n5) Do not deduplicate to synonyms—use the exact span(s) found in the text. If multiple distinct disease or chemical spans are linked, output each distinct pair once.\n6) If there are NO valid CID relations, output nothing (empty output).\n",
+                    "time": "2025-09-13_00-32-41",
+                    "metrics": {
+                        "micro": {
+                            "micro_precision": 0.074,
+                            "micro_recall": 0.183,
+                            "micro_f1": 0.105
+                        },
+                        "macro": {
+                            "macro_precision": 0.097,
+                            "macro_recall": 0.202,
+                            "macro_f1": 0.118
+                        }
+                    }
+                },
+                {
+                    "model_id": "Llama-3.2-3B-Instruct",
+                    "split": "test",
+                    "temperature": 0.7,
+                    "system_prompt": "Task: Extract disease–chemical relations from biomedical text.\n\nInstructions:\n- Only print the relations. Do not include explanations, labels, or any extra text.  \n- Use the provided title, abstract, and entity type info.  \n- Each relation must be formatted as:\n  <disease>, <chemical>\n- Disease must always come first.  \n- Each relation goes on a new line.  \n- Entities must appear in plain text exactly as in the abstract.  \n- Only include relations explicitly supported by the text.  \n\nInput:\nTitle: Famotidine-associated delirium. A series of six cases.\nAbstract: Famotidine is a histamine H2-receptor antagonist used in inpatient settings for prevention of stress ulcers and is showing increasing popularity because of its low cost. Although all of the currently available H2-receptor antagonists have shown the propensity to cause delirium, only two previously reported cases have been associated with famotidine. The authors report on six cases of famotidine-associated delirium in hospitalized patients who cleared completely upon removal of famotidine. The pharmacokinetics of famotidine are reviewed, with no change in its metabolism in the elderly population seen. The implications of using famotidine in elderly persons are discussed.\n\nEntity Types:\n- famotidine → Organic Chemical, Pharmacologic Substance\n- ulcer → Pathologic Function\n- histamine → Organic Chemical, Biologically Active Substance\n- delirium → Mental or Behavioral Dysfunction\n\nOutput:\ndelirium, famotidine\n",
+                    "time": "2025-09-13_01-40-14",
+                    "metrics": {
+                        "micro": {
+                            "micro_precision": 0.107,
+                            "micro_recall": 0.232,
+                            "micro_f1": 0.146
+                        },
+                        "macro": {
+                            "macro_precision": 0.142,
+                            "macro_recall": 0.259,
+                            "macro_f1": 0.167
+                        }
+                    }
+                }
+            ]
+        }
+    },
+    "Phase3": {
+        "method": "HyDE",
+        "BC5CDR": {
+            "google": [
+                {
+                    "model_id": "medgemma-4b-it",
+                    "split": "test",
+                    "temperature": 0.0,
+                    "system_prompt": "",
+                    "time": "2025-09-13_07-55-37",
+                    "metrics": {
+                        "micro": {
+                            "micro_precision": 0.268,
+                            "micro_recall": 0.594,
+                            "micro_f1": 0.373
+                        },
+                        "macro": {
+                            "macro_precision": 0.222,
+                            "macro_recall": 0.636,
+                            "macro_f1": 0.33
+                        }
+                    }
+                },
+                {
+                    "model_id": "medgemma-4b-it",
+                    "split": "test",
+                    "temperature": 0.0,
+                    "system_prompt": "",
+                    "time": "2025-09-13_10-04-18",
+                    "metrics": {
+                        "micro": {
+                            "micro_precision": 0.146,
+                            "micro_recall": 0.107,
+                            "micro_f1": 0.123
+                        },
+                        "macro": {
+                            "macro_precision": 0.103,
+                            "macro_recall": 0.114,
+                            "macro_f1": 0.094
+                        }
+                    }
+                }
+            ],
+            "meta-llama": [
+                {
+                    "model_id": "Llama-3.2-3B-Instruct",
+                    "split": "test",
+                    "temperature": 0.0,
+                    "system_prompt": "",
+                    "time": "2025-09-13_12-05-49",
+                    "metrics": {
+                        "micro": {
+                            "micro_precision": 0.288,
+                            "micro_recall": 0.1051,
+                            "micro_f1": 0.154
+                        },
+                        "macro": {
+                            "macro_precision": 0.121,
+                            "macro_recall": 0.108,
+                            "macro_f1": 0.11
+                        }
+                    }
+                }
+            ],
+            "openai": [
+                {
+                    "model_id": "gpt-4.1-2025-04-14",
+                    "split": "test",
+                    "temperature": 0.0,
+                    "system_prompt": "",
+                    "time": "2025-09-13_17-08-36",
+                    "metrics": {
+                        "micro": {
+                            "micro_precision": 0.469,
+                            "micro_recall": 0.763,
+                            "micro_f1": 0.581
+                        },
+                        "macro": {
+                            "macro_precision": 0.421,
+                            "macro_recall": 0.763,
+                            "macro_f1": 0.543
+                        }
+                    }
+                }
+            ]
+        }
+    }
+}

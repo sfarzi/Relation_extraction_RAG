@@ -1,0 +1,26 @@
+ANALYSIS OF [Train.BioC.JSON]
+-----------------------------
+
+-Total Records: 400
+-Total Entities: 13351
+-Total Relations: 4178
+
+
+-ENTITY TYPES:
+	DiseaseOrPhenotypicFeature
+	SequenceVariant
+	CellLine
+	ChemicalEntity
+	GeneOrGeneProduct
+	OrganismTaxon
+
+
+-RELATION TYPES:
+	Association:             52.47%  |  2192
+	Positive_Correlation:    26.07%  |  1089
+	Bind:                    1.46%   |  61
+	Negative_Correlation:    18.26%  |  763
+	Comparison:              0.67%   |  28
+	Conversion:              0.07%   |  3
+	Cotreatment:             0.74%   |  31
+	Drug_Interaction:        0.26%   |  11

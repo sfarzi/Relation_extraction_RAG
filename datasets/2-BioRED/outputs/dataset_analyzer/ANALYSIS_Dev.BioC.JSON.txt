@@ -1,0 +1,24 @@
+ANALYSIS OF [Dev.BioC.JSON]
+---------------------------
+
+-Total Records: 100
+-Total Entities: 3533
+-Total Relations: 1162
+
+
+-ENTITY TYPES:
+	DiseaseOrPhenotypicFeature
+	OrganismTaxon
+	CellLine
+	ChemicalEntity
+	GeneOrGeneProduct
+	SequenceVariant
+
+
+-RELATION TYPES:
+	Positive_Correlation:    30.29%  |  352
+	Association:             48.19%  |  560
+	Negative_Correlation:    18.59%  |  216
+	Bind:                    1.64%   |  19
+	Cotreatment:             0.86%   |  10
+	Comparison:              0.43%   |  5
