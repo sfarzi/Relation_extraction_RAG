@@ -33,15 +33,15 @@ The project explores how incorporating **UMLS knowledge** and **hypothetical doc
   - MedGemma: **43.4 F1**  
   - LLaMA: **19.5 F1**  
 
-![results](imgs\Appr1-results.png)
+![results](imgs/Appr1-results.png)
 ---
 
 ### 2. UMLS + New NER Method  
-![results](imgs\appr2.png)
+![results](imgs/appr2.png)
 
 Diagram for NER model:
 
-![results](imgs\appr2-2.png)
+![results](imgs/appr2-2.png)
 - Developed a **custom NER model** with:  
   - **77% F1** in entity recognition.  
   - **Entity-to-UMLS mapping** for additional metadata:  
@@ -54,11 +54,11 @@ Diagram for NER model:
   - MedGemma: **↑ 43.4 → 43.8 F1**  
   - LLaMA: **↓ 19.5 → 16.7 F1**  
 
-![results](imgs\Appr2-results.png)
+![results](imgs/Appr2-results.png)
 ---
 
 ### 3. HYDE-based Approach  
-![results](imgs\appr3.png)
+![results](imgs/appr3.png)
 - Steps:  
   1. Use NER to extract entities (Chemical–Disease pairs).  
   2. For each pair, generate a **hypothetical sentence** using LLM.  
@@ -74,7 +74,7 @@ Diagram for NER model:
 
 ---
 
-![results](imgs\Appr3-results.png)
+![results](imgs/Appr3-results.png)
 ## 📊 Results Summary  
 
 | Approach              | GPT F1 | MedGemma F1 | LLaMA F1 |
